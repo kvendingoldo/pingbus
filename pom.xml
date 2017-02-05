@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.kvendingoldo.pingbus</groupId>
+    <artifactId>pingbus</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>My Accounting</name>
+    <packaging>pom</packaging>
+
+    <properties>
+        <jdk.version>1.8</jdk.version>
+        <mysql-connector.version>6.0.5</mysql-connector.version>
+        <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
+        <maven-dependency-plugin.version>2.4</maven-dependency-plugin.version>
+        <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-connector.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.6</version>
+        </dependency>
+    </dependencies>
+
+    <modules>
+        <module>service</module>
+    </modules>
+
+</project>
