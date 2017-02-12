@@ -1,0 +1,35 @@
+# How to use:
+#
+# docker-compose -f ./docker-compose.yml
+#
+# psql -h 10.10.0.1 test_test test
+
+version: '2'
+services:
+  db:
+    image: ${registry.host}/db:${snapshot}
+    environment:
+      POSTGRES_DB: test_test
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+    ports:
+      - "5432:5432"
+    volumes:
+      - /srv/postgres/data:/var/lib/postgresql/data
+    networks:
+      - pingbus-network
+
+  app:
+    image: ${registry.host}/app:${snapshot}
+    ports:
+      - "8080:8080"
+    networks:
+      - pingbus-network
+
+networks:
+  pingbus:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+          gateway: 10.10.0.254
