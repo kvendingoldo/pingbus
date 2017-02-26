@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>pingbus</artifactId>
+        <groupId>com.kvendingoldo.pingbus</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <name>Pingbus :: Containers</name>
+    <artifactId>pingbus-containers</artifactId>
+    <packaging>pom</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <docker.skip.build>true</docker.skip.build>
+        <registry.host>localhost</registry.host>
+        <snapshot>000</snapshot>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>image</id>
+
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <modules>
+                <module>app</module>
+                <module>db-image</module>
+                <module>compose</module>
+            </modules>
+
+            <properties>
+                <docker.skip.build>false</docker.skip.build>
+            </properties>
+
+        </profile>
+    </profiles>
+
+</project>
