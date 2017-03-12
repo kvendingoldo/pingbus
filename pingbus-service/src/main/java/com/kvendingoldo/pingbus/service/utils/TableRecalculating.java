@@ -1,5 +1,6 @@
 package com.kvendingoldo.pingbus.service.utils;
 
+import com.kvendingoldo.pingbus.service.config.Config;
 import com.kvendingoldo.pingbus.service.dao.StationDao;
 import com.kvendingoldo.pingbus.service.dao.factory.DaoFactory;
 import com.kvendingoldo.pingbus.service.entity.Station;
@@ -17,43 +18,11 @@ import java.util.*;
 
 public class TableRecalculating {
 
-    private static final Logger userLogger = LogManager.getLogger();
-
-    private void sort(List<Station> arr) {
-        for (int i = arr.size() - 1; i >= 0; i--) {
-            for (int j = 0; j < i; j++) {
-
-                int time1 = arr.get(j).getTTA().getHour() * 60 + arr.get(j).getTTA().getMinute();
-                int time2 = arr.get(j + 1).getTTA().getHour() * 60 + arr.get(j + 1).getTTA().getMinute();
-
-                if (time1 > time2) {
-                    Station tmpStation = arr.get(j);
-                    arr.set(j, arr.get(j + 1));
-                    arr.set(j + 1, tmpStation);
-                }
-            }
-        }
-    }
-
-    private LocalTime reduceTimes(ArrayList<LocalTime> excess_times) {
-
-        userLogger.debug("Reduce function was running");
-
-        int hour = excess_times.get(0).getHour();
-        int minutes = 0;
-
-        for (int i = 0; i < excess_times.size(); i++) {
-            minutes += excess_times.get(i).getMinute();
-        }
-
-        minutes = minutes / excess_times.size();
-
-        return LocalTime.of(hour, minutes);
-    }
+    private Config config = new Config();
 
     public List<Station> getUpdatedData() {
 
-        StationDao stationDao = new DaoFactory().getStationDao("postgres");
+        StationDao stationDao = new DaoFactory().getStationDao(config.getDbName());
 
         List<Station> stations = stationDao.getAll();
 
@@ -61,7 +30,7 @@ public class TableRecalculating {
 
         for (int i = 0; i < stations.size(); i++) {
 
-            ArrayList<LocalTime> collect_times = new ArrayList<>();
+            List<LocalTime> collect_times = new ArrayList<>();
 
             collect_times.add(stations.get(i).getTTA());
 
@@ -112,4 +81,39 @@ public class TableRecalculating {
         // load new data to db
 
     }
+
+    private static final Logger userLogger = LogManager.getLogger();
+
+    private void sort(List<Station> arr) {
+        for (int i = arr.size() - 1; i >= 0; i--) {
+            for (int j = 0; j < i; j++) {
+
+                int time1 = arr.get(j).getTTA().getHour() * 60 + arr.get(j).getTTA().getMinute();
+                int time2 = arr.get(j + 1).getTTA().getHour() * 60 + arr.get(j + 1).getTTA().getMinute();
+
+                if (time1 > time2) {
+                    Station tmpStation = arr.get(j);
+                    arr.set(j, arr.get(j + 1));
+                    arr.set(j + 1, tmpStation);
+                }
+            }
+        }
+    }
+
+    private LocalTime reduceTimes(List<LocalTime> excess_times) {
+
+        userLogger.debug("Reduce function was running");
+
+        int hour = excess_times.get(0).getHour();
+        int minutes = 0;
+
+        for (int i = 0; i < excess_times.size(); i++) {
+            minutes += excess_times.get(i).getMinute();
+        }
+
+        minutes = minutes / excess_times.size();
+
+        return LocalTime.of(hour, minutes);
+    }
+
 }

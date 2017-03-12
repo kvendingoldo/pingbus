@@ -1,5 +1,8 @@
 package com.kvendingoldo.pingbus.service.config;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,14 +20,21 @@ public class Config {
     private String dbUsername;
     private String dbPassword;
     private String dbName;
+    private String dbTableName;
     private String timezone;
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public Config() {
     }
 
     public Config(String action) {
-        if (action.equals("load")) {
-            load();
+        try {
+            if (action.equals("load")) {
+                load();
+            }
+        } catch (NullPointerException ex) {
+            LOGGER.error("[ERROR] config action doesn't choose");
         }
     }
 
@@ -38,16 +48,17 @@ public class Config {
         try (InputStream stream = getClass().getResourceAsStream("/app.properties")) {
             property.load(stream);
 
-            dbName = property.getProperty("db.basic.table");
+            dbName = property.getProperty("db.name");
+            dbTableName = property.getProperty("db.basic.table");
             dbUrl = property.getProperty("db.url");
             dbUsername = property.getProperty("db.username");
             dbPassword = property.getProperty("db.password");
             timezone = property.getProperty("timezone");
 
-        } catch (FileNotFoundException e) {
-            System.err.println("[ERROR] Config file doesn't exist!");
-        } catch (IOException e) {
-            System.err.println("[ERROR]");
+        } catch (FileNotFoundException ex) {
+            LOGGER.error("[ERROR] Config file doesn't exist!");
+        } catch (IOException ex) {
+            LOGGER.error("[ERROR]");
         }
     }
 
@@ -64,10 +75,14 @@ public class Config {
     }
 
     public String getDbTableName() {
-        return dbName;
+        return dbTableName;
     }
 
     public String getCurrentTimeZone(){
         return timezone;
+    }
+
+    public String getDbName() {
+        return dbName;
     }
 }

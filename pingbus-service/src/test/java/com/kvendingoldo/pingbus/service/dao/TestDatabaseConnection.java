@@ -30,5 +30,7 @@ public class TestDatabaseConnection extends Assert {
 
         Assert.assertNotNull(connection);
         Assert.assertTrue(!connection.isClosed());
+
+        connection.close();
     }
 }

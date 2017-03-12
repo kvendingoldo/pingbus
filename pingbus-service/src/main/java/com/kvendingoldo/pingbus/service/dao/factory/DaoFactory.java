@@ -5,6 +5,8 @@ import com.kvendingoldo.pingbus.service.dao.MysqlStationDao;
 import com.kvendingoldo.pingbus.service.dao.PostgresStationDao;
 import com.kvendingoldo.pingbus.service.dao.StationDao;
 import com.kvendingoldo.pingbus.service.exceptions.database.UnknownDatabaseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,6 +20,8 @@ import java.sql.SQLException;
 
 public class DaoFactory {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public DaoFactory() {
     }
 
@@ -30,19 +34,27 @@ public class DaoFactory {
             connection = DriverManager.getConnection(config.getDbUrl(), config.getDbUsername(), config.getDbPassword());
         } catch (SQLException ex) {
             ex.printStackTrace();
-            System.out.println("SQLException message:" + ex.getMessage());
+            LOGGER.error("SQLException message:" + ex.getMessage());
         }
 
         return connection;
     }
 
     public StationDao getStationDao(String dbName) {
-        if (dbName.equals("mysql"))
-            return new MysqlStationDao();
-        else if (dbName.equals("postgres"))
-            return new PostgresStationDao(getConnection());
-        else {
-            throw new UnknownDatabaseException("Unknown database: " + dbName);
+
+        StationDao stationDao = null;
+
+        try {
+            if (dbName.equals("mysql"))
+                stationDao = new MysqlStationDao();
+            else if (dbName.equals("postgres"))
+                stationDao = new PostgresStationDao(getConnection());
+            else
+                throw new UnknownDatabaseException("Unknown database: " + dbName);
+        } catch (NullPointerException ex) {
+            LOGGER.error("SQLException message:" + ex.getMessage());
         }
+
+        return stationDao;
     }
 }

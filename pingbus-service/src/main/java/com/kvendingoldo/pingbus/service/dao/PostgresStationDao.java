@@ -2,6 +2,8 @@ package com.kvendingoldo.pingbus.service.dao;
 
 import com.kvendingoldo.pingbus.service.config.Config;
 import com.kvendingoldo.pingbus.service.entity.Station;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,6 +27,8 @@ public class PostgresStationDao implements StationDao {
     private Config config = new Config();
     private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("H:mm:ss");
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public PostgresStationDao(Connection connection) {
         this.connection = connection;
         config.load();
@@ -46,8 +50,8 @@ public class PostgresStationDao implements StationDao {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
-            System.err.println("SQLException message:" + ex.getMessage());
-            System.err.println("SQLException SQL state:" + ex.getSQLState());
+            LOGGER.error("SQLException message:" + ex.getMessage());
+            LOGGER.error("SQLException SQL state:" + ex.getSQLState());
         }
     }
 
@@ -65,8 +69,8 @@ public class PostgresStationDao implements StationDao {
             statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
-            System.err.println("SQLException message:" + ex.getMessage());
-            System.err.println("SQLException SQL state:" + ex.getSQLState());
+            LOGGER.error("SQLException message:" + ex.getMessage());
+            LOGGER.error("SQLException SQL state:" + ex.getSQLState());
         }
     }
 
@@ -86,8 +90,8 @@ public class PostgresStationDao implements StationDao {
             station.setRating(rs.getInt("rating"));
         } catch (SQLException ex) {
             ex.printStackTrace();
-            System.err.println("SQLException message:" + ex.getMessage());
-            System.err.println("SQLException SQL state:" + ex.getSQLState());
+            LOGGER.error("SQLException message:" + ex.getMessage());
+            LOGGER.error("SQLException SQL state:" + ex.getSQLState());
         }
 
         return station;
@@ -109,8 +113,8 @@ public class PostgresStationDao implements StationDao {
             station.setRating(rs.getInt("rating"));
         } catch (SQLException ex) {
             ex.printStackTrace();
-            System.err.println("SQLException message:" + ex.getMessage());
-            System.err.println("SQLException SQL state:" + ex.getSQLState());
+            LOGGER.error("SQLException message:" + ex.getMessage());
+            LOGGER.error("SQLException SQL state:" + ex.getSQLState());
         }
 
         return station;
@@ -119,8 +123,8 @@ public class PostgresStationDao implements StationDao {
     @Override
     public Station getNearest(){
 
-        ZoneId volgogradTZ = ZoneId.of(config.getCurrentTimeZone());
-        LocalTime currentTime = LocalTime.now(volgogradTZ);
+        ZoneId timezone = ZoneId.of(config.getCurrentTimeZone());
+        LocalTime currentTime = LocalTime.now(timezone);
 
         String sql = "SELECT *\n" +
                 "FROM " + config.getDbTableName() + "\n" +
@@ -138,8 +142,8 @@ public class PostgresStationDao implements StationDao {
             station.setRating(rs.getInt("rating"));
         } catch (SQLException ex) {
             ex.printStackTrace();
-            System.err.println("SQLException message:" + ex.getMessage());
-            System.err.println("SQLException SQL state:" + ex.getSQLState());
+            LOGGER.error("SQLException message:" + ex.getMessage());
+            LOGGER.error("SQLException SQL state:" + ex.getSQLState());
         }
 
         return station;
@@ -163,8 +167,8 @@ public class PostgresStationDao implements StationDao {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            System.err.println("SQLException message:" + ex.getMessage());
-            System.err.println("SQLException SQL state:" + ex.getSQLState());
+            LOGGER.error("SQLException message:" + ex.getMessage());
+            LOGGER.error("SQLException SQL state:" + ex.getSQLState());
         }
 
         return list;
