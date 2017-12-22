@@ -7,24 +7,24 @@
 version: '2'
 services:
   db:
-    image: ${registry.host}/db:${snapshot}
+    image: ${registry.host}/pingbus/db:${snapshot}
     environment:
-      POSTGRES_DB: test_test
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
+      POSTGRES_DB: pingbus
+      POSTGRES_USER: asharov
+      POSTGRES_PASSWORD: Password1234
     ports:
       - "5432:5432"
     volumes:
-      - /srv/postgres/data:/var/lib/postgresql/data
+      - /Users/asharov/oop-uni:/var/lib/postgresql/data
     networks:
-      - pingbus-network
+      - pingbus
 
   app:
-    image: ${registry.host}/app:${snapshot}
+    image: ${registry.host}/pingbus/app:${snapshot}
     ports:
       - "8080:8080"
     networks:
-      - pingbus-network
+      - pingbus
 
 networks:
   pingbus:

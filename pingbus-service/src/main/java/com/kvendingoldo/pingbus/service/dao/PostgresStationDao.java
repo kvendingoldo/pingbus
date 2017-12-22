@@ -51,8 +51,23 @@ public class PostgresStationDao implements StationDao {
         }
     }
 
+
     @Override
     public void update(Station station) {
+
+        String sql = "UPDATE " + config.getDbTableName() + " SET tta = ?, rating = ? WHERE id = ?;";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, station.getTTA().toString());
+            statement.setInt(2, station.getRating());
+            statement.setInt(3, station.getId());
+            statement.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.err.println("SQLException message:" + ex.getMessage());
+            System.err.println("SQLException SQL state:" + ex.getSQLState());
+        }
     }
 
     @Override

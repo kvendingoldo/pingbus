@@ -31,6 +31,11 @@ public class Station implements AbstractStation {
         this.rating = rating;
     }
 
+    public Station(LocalTime tta) {
+        this.tta = tta;
+        this.rating = 0;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
