@@ -33,7 +33,7 @@ public class Contoller {
         userLogger.info("try GET /station/all");
 
         Connection con = daoFactory.getConnection();
-        dao = new PostgresStationDao(con);
+        dao = daoFactory.getStationDao("postgres");
 
         return dao.getAll();
     }
@@ -44,7 +44,7 @@ public class Contoller {
         userLogger.info(String.format("try GET /station/%d", id));
 
         Connection con = daoFactory.getConnection();
-        dao = new PostgresStationDao(con);
+        dao = daoFactory.getStationDao("postgres");
 
         return dao.get(id);
     }
@@ -54,7 +54,7 @@ public class Contoller {
         userLogger.info(String.format("try GET /station/nearest"));
 
         Connection con = daoFactory.getConnection();
-        dao = new PostgresStationDao(con);
+        dao = daoFactory.getStationDao("postgres");
 
         return dao.getNearest();
     }
@@ -64,7 +64,7 @@ public class Contoller {
         userLogger.info(String.format("try POST /station/%d/set_rating?=%d", id, rating));
 
         Connection con = daoFactory.getConnection();
-        dao = new PostgresStationDao(con);
+        dao = daoFactory.getStationDao("postgres");
         Station station = dao.get(id);
         station.setRating(rating);
         dao.update(station);
@@ -75,7 +75,7 @@ public class Contoller {
         userLogger.info(String.format("try POST /station/%d/add_rating", id));
 
         Connection con = daoFactory.getConnection();
-        dao = new PostgresStationDao(con);
+        dao = daoFactory.getStationDao("postgres");
         Station station = dao.get(id);
         station.setRating(station.getRating() + 1);
         dao.update(station);

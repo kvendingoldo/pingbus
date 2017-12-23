@@ -23,6 +23,9 @@
         <postgresql.version>9.4.1212</postgresql.version>
         <skipTest>false</skipTest>
         <spring.version>1.5.1.RELEASE</spring.version>
+
+        <argLine>-Xms256m -Xmx1024m</argLine>
+        <surefireArgLine/>
     </properties>
 
     <pluginRepositories>
@@ -110,6 +113,12 @@
                 <version>2.2.0</version>
             </dependency>
 
+
+            <dependency>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.8</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -118,5 +127,57 @@
         <module>pingbus-containers</module>
         <module>pingbus-mobile-client</module>
     </modules>
+
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <!--
+                        Prepares the property pointing to the JaCoCo runtime agent which
+                        is passed as VM argument when Maven the Surefire plugin is executed.
+                    -->
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <!--<propertyName>surefireArgLine</propertyName>-->
+                            <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>report-aggregate</id>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>${skipTest}</skipTests>
+                    <!--<argLine>-Xms256m -Xmx1024m @{surefireArgLine}</argLine>-->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
